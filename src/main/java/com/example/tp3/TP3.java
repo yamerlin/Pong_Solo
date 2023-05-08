@@ -16,8 +16,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class TP3 extends Application {
     Pane root;
@@ -29,13 +33,25 @@ public class TP3 extends Application {
     ImageView imageViewExplosionViolet;
     ImageView imageViewExplosionRouge;
 
+    /*
+    Media sonExplosion = new Media(this.getClass().getResource("/sons/sonExplosion.mp3").toString());
+    MediaPlayer player = new MediaPlayer(sonExplosion);
+     */
+
     double dxballe = 5;
     double dyballe = 5;
     int score = 0;
     boolean partieEnCours = false;
 
+    boolean isMusicEnCours = false;
+
+
+
+
     @Override
     public void start(Stage mainwindow) throws IOException {
+
+
         root = new Pane();
         mainwindow.setScene(new Scene(root, 800, 600));
         mainwindow.setTitle("Pong Solo");
@@ -82,7 +98,9 @@ public class TP3 extends Application {
     }
 
     public void jeu(){
+
         if(partieEnCours) {
+
             root.getChildren().remove(debutDePartieText);
 
             if (balle.getLayoutX() >= root.getWidth()) {
@@ -98,6 +116,8 @@ public class TP3 extends Application {
             }
 
             if (balle.getLayoutX() <= 0) {
+                SonDefaite();
+
                 System.out.println("Partie perdue");
                 partieEnCours = false;
 
@@ -195,11 +215,13 @@ public class TP3 extends Application {
         imageViewExplosionViolet.setLayoutX(x-185);
         imageViewExplosionViolet.setLayoutY(y-150);
 
+        SonExplosion();
+
         return imageViewExplosionViolet;
     }
 
     public ImageView gifExplosionMur(double x, double y){
-        Image explosion = new Image(this.getClass().getResource("/images/explosion_rouge.gif").toExternalForm());
+        Image explosion = new Image(this.getClass().getResource("/images/explosion_mur.gif").toExternalForm());
 
         imageViewExplosionRouge = new ImageView(explosion);
         imageViewExplosionRouge.setScaleX(0.3);
@@ -207,7 +229,23 @@ public class TP3 extends Application {
         imageViewExplosionRouge.setLayoutX(x-150);
         imageViewExplosionRouge.setLayoutY(y-150);
 
+        System.out.println("BOUM");
+
         return imageViewExplosionRouge;
+    }
+
+    public void SonExplosion(){
+        Media sonExplosion = new Media(Paths.get("sonExplosion.mp3").toUri().toString());
+        MediaPlayer player = new MediaPlayer(sonExplosion);
+        player.play();
+    }
+
+    public void SonDefaite(){
+        Media sonExplosion = new Media(Paths.get("defaite.mp3").toUri().toString());
+        MediaPlayer player = new MediaPlayer(sonExplosion);
+        player.setStartTime(Duration.millis(1));
+        player.setStopTime(Duration.millis(3000));
+        player.play();
     }
 
     public static void main(String[] args) {
